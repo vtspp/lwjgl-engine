@@ -1,5 +1,7 @@
 package br.com.lwjgl.core;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
@@ -10,11 +12,17 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 final class Window extends Component {
     private long window;
     private int width = 800;
     private int height = 400;
-    private String title = "Game Program";
+    private String title = "Game Engine";
+
+    @Override
+    protected int memoryAddress() {
+        return (int) window;
+    }
 
     @Override
     protected void run () {
@@ -32,7 +40,7 @@ final class Window extends Component {
         });
 
         GL.createCapabilities();
-        glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     }
 
     private void setup () {

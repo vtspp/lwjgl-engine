@@ -31,6 +31,9 @@ public class Program {
     private void register () {
         log.info("Registering components");
         Component.add(new Window());
+        Component.add(new VertexShader());
+        Component.add(new FragmentShader());
+        Component.add(new ShaderProgram());
         Component.add(new Game());
     }
 
