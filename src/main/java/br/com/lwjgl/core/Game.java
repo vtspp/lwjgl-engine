@@ -49,6 +49,7 @@ final class Game extends Component {
     private void processVertexArrayObject () {
         vertexArrayObject.bind();
         vertexArrayObject.enableIndexVertexArray(0);
+        vertexArrayObject.unbind();
     }
 
     private void processVertexBufferObject() {

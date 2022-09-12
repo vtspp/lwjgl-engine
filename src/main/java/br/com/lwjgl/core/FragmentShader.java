@@ -37,7 +37,8 @@ final class FragmentShader extends Component implements Evaluable {
         glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, success);
 
         if (success.get(0) == GL_FALSE) {
-            log.error(glGetShaderInfoLog(fragmentShader, 512));
+            final int infoLogLength = 512;
+            log.error(glGetShaderInfoLog(fragmentShader, infoLogLength));
         }
     }
 

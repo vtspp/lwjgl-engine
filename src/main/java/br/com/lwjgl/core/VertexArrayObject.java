@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import static org.lwjgl.opengl.GL46.*;
 
 @Slf4j
-public class VertexArrayObject extends Component {
+final class VertexArrayObject extends Component {
     private int vertexArrayObject;
     private int $null;
 
@@ -17,6 +17,9 @@ public class VertexArrayObject extends Component {
     @Override
     protected void run() {
         vertexArrayObject = glCreateVertexArrays();
+
+        if (vertexArrayObject == $null)
+            throw new RuntimeException("Vertex Array Object not initialize");
     }
 
     @Override

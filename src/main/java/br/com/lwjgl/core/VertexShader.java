@@ -37,7 +37,8 @@ final class VertexShader extends Component implements Evaluable {
         glGetShaderiv(memoryAddress(), GL_COMPILE_STATUS, success);
 
         if (success.get(0) == GL_FALSE) {
-            log.error(glGetShaderInfoLog(vertexShader, 512));
+            final int infoLogLength = 512;
+            log.error(glGetShaderInfoLog(vertexShader, infoLogLength));
         }
     }
 

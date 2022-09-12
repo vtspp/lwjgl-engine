@@ -35,6 +35,7 @@ final class ShaderProgram extends Component implements Evaluable {
 
         this.evaluate();
         glUseProgram(program);
+
         vertexShader.destroy();
         fragmentShader.destroy();
     }
@@ -45,7 +46,8 @@ final class ShaderProgram extends Component implements Evaluable {
         glGetProgramiv(memoryAddress(), GL_LINK_STATUS, success);
 
         if (success.get(0) == GL_FALSE) {
-            log.error(glGetProgramInfoLog(program, 512));
+            final int infoLogLength = 512;
+            log.error(glGetProgramInfoLog(program, infoLogLength));
         }
     }
 

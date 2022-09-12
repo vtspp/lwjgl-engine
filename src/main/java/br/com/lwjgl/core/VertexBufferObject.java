@@ -2,7 +2,7 @@ package br.com.lwjgl.core;
 
 import static org.lwjgl.opengl.GL46.*;
 
-public class VertexBufferObject extends Component {
+final class VertexBufferObject extends Component {
     private int vertexBufferObject;
     private int $null;
 
@@ -14,6 +14,9 @@ public class VertexBufferObject extends Component {
     @Override
     protected void run() {
         vertexBufferObject = glGenBuffers();
+
+        if (vertexBufferObject == $null)
+            throw new RuntimeException("Vertex Buffer Object not initialize");
     }
 
     @Override
