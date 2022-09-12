@@ -1,13 +1,16 @@
 package br.com.lwjgl.core;
 
 import br.com.lwjgl.util.EngineFileRead;
-import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.lwjgl.system.MemoryStack;
+
+import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL46.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-@Getter
-final class VertexShader extends Component {
+@Slf4j
+final class VertexShader extends Component implements Evaluable {
     private int vertexShader;
 
     @Override
@@ -25,13 +28,21 @@ final class VertexShader extends Component {
         glShaderSource(vertexShader, EngineFileRead.read("vertex-shader.vert"));
         glCompileShader(vertexShader);
 
-        super.errorEvaluator(GL_COMPILE_STATUS);
-
-        clear();
+        this.evaluate();
     }
 
     @Override
-    protected void clear() {
+    public void evaluate() {
+        IntBuffer success = MemoryStack.stackCallocInt(1);
+        glGetShaderiv(memoryAddress(), GL_COMPILE_STATUS, success);
+
+        if (success.get(0) == GL_FALSE) {
+            log.error(glGetShaderInfoLog(vertexShader, 512));
+        }
+    }
+
+    @Override
+    protected void destroy() {
         if (vertexShader == NULL)
             return;
         glDeleteShader(vertexShader);

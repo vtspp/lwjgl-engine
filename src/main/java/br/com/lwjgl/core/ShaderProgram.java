@@ -1,10 +1,19 @@
 package br.com.lwjgl.core;
 
+import lombok.extern.slf4j.Slf4j;
+import org.lwjgl.system.MemoryStack;
+
+import java.nio.IntBuffer;
+
 import static org.lwjgl.opengl.GL46.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-final class ShaderProgram extends Component {
+@Slf4j
+final class ShaderProgram extends Component implements Evaluable {
     private int program;
+
+    private VertexShader vertexShader;
+    private FragmentShader fragmentShader;
 
     @Override
     protected int memoryAddress() {
@@ -14,19 +23,34 @@ final class ShaderProgram extends Component {
     @Override
     protected void run() {
         program = glCreateProgram();
+        vertexShader = (VertexShader) Component.getInstance().get(VertexShader.class);
+        fragmentShader = (FragmentShader) Component.getInstance().get(FragmentShader.class);
 
         if (program == NULL)
             throw new RuntimeException("Shader Program not initialized");
 
-        glAttachShader(program, Component.getInstance().get(VertexShader.class).memoryAddress());
-        glAttachShader(program, Component.getInstance().get(FragmentShader.class).memoryAddress());
+        glAttachShader(program, vertexShader.memoryAddress());
+        glAttachShader(program, fragmentShader.memoryAddress());
         glLinkProgram(program);
 
-        super.errorEvaluator(GL_LINK_STATUS);
-
+        this.evaluate();
+        glUseProgram(program);
+        vertexShader.destroy();
+        fragmentShader.destroy();
     }
 
     @Override
-    protected void clear() {
+    public void evaluate () {
+        IntBuffer success = MemoryStack.stackCallocInt(1);
+        glGetProgramiv(memoryAddress(), GL_LINK_STATUS, success);
+
+        if (success.get(0) == GL_FALSE) {
+            log.error(glGetProgramInfoLog(program, 512));
+        }
+    }
+
+    @Override
+    protected void destroy() {
+        glDeleteShader(program);
     }
 }

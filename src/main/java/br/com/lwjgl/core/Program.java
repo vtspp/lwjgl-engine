@@ -34,6 +34,8 @@ public class Program {
         Component.add(new VertexShader());
         Component.add(new FragmentShader());
         Component.add(new ShaderProgram());
+        Component.add(new VertexArrayObject());
+        Component.add(new VertexBufferObject());
         Component.add(new Game());
     }
 

@@ -34,16 +34,16 @@ final class Window extends Component {
 
         setup();
 
-        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
-            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
-                glfwSetWindowShouldClose(window, true);
-        });
-
         GL.createCapabilities();
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     }
 
     private void setup () {
+        glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
+            if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
+                glfwSetWindowShouldClose(window, true);
+        });
+
         GLFWVidMode monitor = glfwGetVideoMode(glfwGetPrimaryMonitor());
         glfwSetWindowPos(window, (monitor.width() - width) / 2, (monitor.height() - height) / 2);
 
@@ -59,13 +59,15 @@ final class Window extends Component {
         return glfwWindowShouldClose(window);
     }
 
-    @Override
-    protected void clear () {
+    protected void clear() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glfwSwapBuffers(window);
-        glfwPollEvents();
     }
 
+    protected void swapBuffers () {
+        glfwSwapBuffers(window);
+    }
+
+    @Override
     protected void destroy () {
         glfwFreeCallbacks(window);
         glfwDestroyWindow(window);

@@ -1,11 +1,16 @@
 package br.com.lwjgl.core;
 
 import br.com.lwjgl.util.EngineFileRead;
+import lombok.extern.slf4j.Slf4j;
+import org.lwjgl.system.MemoryStack;
+
+import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL46.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-final class FragmentShader extends Component {
+@Slf4j
+final class FragmentShader extends Component implements Evaluable {
     private int fragmentShader;
 
     @Override
@@ -23,13 +28,21 @@ final class FragmentShader extends Component {
         glShaderSource(fragmentShader, EngineFileRead.read("fragment-shader.frag"));
         glCompileShader(fragmentShader);
 
-        super.errorEvaluator(GL_COMPILE_STATUS);
-
-        clear();
+        this.evaluate();
     }
 
     @Override
-    protected void clear() {
+    public void evaluate() {
+        IntBuffer success = MemoryStack.stackCallocInt(1);
+        glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, success);
+
+        if (success.get(0) == GL_FALSE) {
+            log.error(glGetShaderInfoLog(fragmentShader, 512));
+        }
+    }
+
+    @Override
+    protected void destroy() {
         if (fragmentShader == NULL)
             return;
         glDeleteShader(fragmentShader);

@@ -1,7 +1,7 @@
-#version 330 core
+#version 460
 
 layout (location = 0) in vec3 vector;
 
 void main() {
-    gl_position = vec4(vector.x, vector.y, vector.z, 1.0);
+    gl_Position = vec4(vector, 1.0);
 }
